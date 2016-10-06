@@ -1,0 +1,93 @@
+﻿@model AspNetMvcAjaxHelpers.Models.Nesne
+
+@{
+    ViewBag.Title = "Index2";
+}
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<h2>Index2</h2>
+
+<div class="col-md-12">
+    <div id="loading" style="display:none;">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-warning active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" style="width: 100%">
+                <span>veriler gönderiliyor..</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="sonuc"></div>
+
+@using (Ajax.BeginForm("Index2", null, new AjaxOptions()
+{
+    HttpMethod = "POST",
+    UpdateTargetId = "sonuc",
+    LoadingElementId = "loading",
+    LoadingElementDuration = 300,
+    InsertionMode = InsertionMode.Replace,
+    Confirm = "Verileri göndermek istediğinize emin misiniz?"
+}, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Nesne</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Ad, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Ad, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Ad, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Soyad, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Soyad, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Soyad, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Ozgecmis, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" id="Ozgecmis" class="form-control" />
+                <input type="hidden" id="hiddenOzgecmis" name="Ozgecmis" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+
+    $(function () {
+        document.getElementById('Ozgecmis').addEventListener('change', function () {
+
+            var reader = new FileReader();
+            reader.onload = function () {
+
+                var arrayBuffer = this.result,
+                  array = new Uint8Array(arrayBuffer),
+                  binaryString = String.fromCharCode.apply(null, array);
+
+                console.log(binaryString);
+
+                $("#hiddenOzgecmis").val(binaryString);
+
+            }
+            reader.readAsArrayBuffer(this.files[0]);
+
+        }, false);
+    })
+
+</script>

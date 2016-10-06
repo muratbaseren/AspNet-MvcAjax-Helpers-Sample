@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+
+<h2>Ajax Action Link Kullanımı</h2>
+
+@Ajax.ActionLink("Ürünleri Yükle", "GetUrunler", null, new AjaxOptions()
+{
+    HttpMethod = "GET",
+    UpdateTargetId = "urunler",
+    InsertionMode = InsertionMode.Replace,
+    LoadingElementId="loading",
+    LoadingElementDuration = 300,
+    OnBegin="geturunler_begin",
+    OnComplete="geturunler_complete",
+    OnFailure= "geturunler_failure"
+}, new { @class = "btn btn-success", id="btnGetUrunler" })
+
+<hr />
+
+<div class="col-md-12">
+    <div id="loading" style="display:none;">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-warning active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" style="width: 100%">
+                <span>yükleniyor..</span>
+            </div>
+        </div>
+    </div>
+
+    <ul id="urunler" class="list-group"></ul>
+</div>
+
+
+<script>
+
+    function geturunler_begin() {
+        $("#btnGetUrunler").attr("disabled", "disabled");
+        //$("#btnGetUrunler").hide();
+        //$("#btnGetUrunler").css("visibility", "hidden");
+        //$("#btnGetUrunler").css("display", "none");
+    }
+
+    function geturunler_complete() {
+        $("#btnGetUrunler").removeAttr("disabled");
+        //$("#btnGetUrunler").show();
+        //$("#btnGetUrunler").css("visibility", "visible");
+        //$("#btnGetUrunler").css("display", "block");
+    }
+
+    function geturunler_failure() {
+        alert("Hata oluştu. Lütfen daha sonra tekrar deneyiniz..");
+    }
+
+</script>
