@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<button id="btnVeriYukle" type="button" class="btn btn-success">Load Metodu ile Veri Yükleme</button>
+<button id="btnVeriYukle2" type="button" class="btn btn-info">Ajax Metodu ile Veri Yükleme</button>
+<button id="btnVeriYukle3" type="button" class="btn btn-info">Ajax Metodu ile Veri Ekleme ve Yükleme</button>
+<input id="txtVeri" type="text" class="form-control" placeholder="veri giriniz.." />
+<hr />
+
+<div id="loading" class="alert alert-success"
+     style="display:none;">
+    yükleniyor..
+</div>
+
+<ul id="liste" class="list-group"></ul>
+
+<script>
+
+    $(function () {
+
+        $("#btnVeriYukle").click(function () {
+
+            $("#liste").empty();
+
+            $("#loading").fadeIn(300, function () {
+
+                $("#liste").load("/Home/GetUrunler", function () {
+                    $("#loading").fadeOut(300);
+                });
+
+            });
+
+        });
+
+        $("#btnVeriYukle2").click(function () {
+
+            //$("#loading").fadeIn(300);
+            $("#liste").empty();
+
+            $.ajax({
+                method: "GET",
+                url: "/Home2/GetUrunlerJson",
+                beforeSend: function () { $("#loading").fadeIn(300); }
+            }).done(function (d) {   // done = success
+                // ajax isteği başarıyla geldiğinde..
+
+                for (var i in d) {
+                    var dt = d[i];
+                    var li = $("<li class='list-group-item'></li>");
+                    li.html(dt);
+
+                    $("#liste").append(li);
+                }
+
+            }).fail(function () {   // fail = error
+                // ajax isteği başarısız olduğunda..
+                alert("Hata oluştu.");
+
+            }).always(function () {   // always = complete
+                // ajax isteği başarılı ya da başarısız olsun tamamlandığında..
+                $("#loading").fadeOut(300);
+            });
+
+        });
+
+        $("#btnVeriYukle3").click(function () {
+
+            //$("#loading").fadeIn(300);
+            $("#liste").empty();
+
+            var v = $("#txtVeri").val();
+
+            $.ajax({
+                method: "POST",
+                url: "/Home2/GetUrunlerJson",
+                data: { veri: v },
+                beforeSend: function () { $("#loading").fadeIn(300); }
+            }).done(function (d) {   // done = success
+                // ajax isteği başarıyla geldiğinde..
+
+                for (var i in d) {
+                    var dt = d[i];
+                    var li = $("<li class='list-group-item'></li>");
+                    li.html(dt);
+
+                    $("#liste").append(li);
+                }
+
+            }).fail(function () {   // fail = error
+                // ajax isteği başarısız olduğunda..
+                alert("Hata oluştu.");
+
+            }).always(function () {   // always = complete
+                // ajax isteği başarılı ya da başarısız olsun tamamlandığında..
+                $("#loading").fadeOut(300);
+            });
+
+        });
+
+    });
+
+</script>
